@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title>Claculadora</title>
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;  
+         }
+         body{
+             display: flex;
+             justify-content: center;
+             background-color: blue;
+         }
+         .mainContainer{
+            margin: 50px 10px;
+            width: 380px;
+            display: flex;    
+            flex-direction: column;     
+            align-items: center;
+            gap: 1em;            
+            border: 2px white solid;
+            padding: 20px;
+            border-radius: 1em;
+            background-color: brown;
+         }
+         .pantalla{
+           width: 100%;
+         }
+         .pantalla input{
+             background-color: black;
+             height: 3em;
+             width: 100%;
+             border: 2px white solid;
+             border-radius: 0.5em;    
+             color: aliceblue;
+             font-size: 1.5rem;
+             text-align: right;
+         }
+         .numeros{
+             width: 100%;
+             display: grid;
+             grid-template-columns: 24% 24% 24% 24%;            
+             justify-content: space-between;
+             column-gap: 1%;
+             row-gap: 1em;
+             flex-wrap: wrap;
+         } 
+         
+         .numeros input{
+             height: 60px;
+             border-radius: 1em;    
+             font-size: 1.2rem;
+             font-weight: bolder;
+         }
+         .numeros button{
+            border-radius: 1em;    
+            font-size: 1.2rem;
+            font-weight: bolder;
+            height: 60px;
+            background-color: aqua;
+         }
+         .numeros input:active{
+            background-color: blueviolet;
+         }
+         .numeros button:active{
+            background-color: blueviolet;
+         }
+    </style>
+</head>
+<body>
+
+    <div class="mainContainer">
+        <div class="pantalla">
+            <input type="text" id="pantalla" >
+        </div>
+        <div class="numeros">     
+           
+            <button></button>
+            <button></button>
+            <button id="borrarTodo" onclick="borrarTodo()">AC</button>
+            <button id="borrar" onclick="borrarUltimo()" ><i class="bi bi-backspace-fill"></i></button>       
+                     
+            <input type="button" id="n1" value="7">
+            <input type="button" id="n2" value="8">
+            <input type="button" id="n3" value="9">            
+            <button class="operacion" id="operacion" >/</button>          
+            <input type="button" id="n4" value="4">
+            <input type="button" id="n5" value="5">
+            <input type="button" id="n6" value="6">   
+            <button class="operacion" id="operacion" >*</button>         
+            <input type="button" id="n7" value="1">
+            <input type="button" id="n8" value="2">
+            <input type="button" id="n9" value="3">  
+            <button class="operacion" id="operacion" >-</button>        
+            <input type="button" id="n0" value="0"> 
+            <input type="button" id="n6" value="0">
+            <button class="resultado" id="resultadon" onclick="calcular()">=</button>  
+            <button class="operacion" id="operacion" >+</button>  
+            
+    </div>
+    </div>
+<!---------------------------------JS---------------------------------------------------------->   
+    <script>      
+                //--------------------------------------------------------------------------------        
+                const pantalla = document.getElementById('pantalla');
+               pantalla.focus();
+                // Obtener todos los inputs numéricos
+                const inputsNumericos = document.querySelectorAll('input[id^="n"]');
+
+                // Iterar sobre los inputs numéricos y agregar un manejador de eventos
+                inputsNumericos.forEach((input) => {
+                input.addEventListener('click', () => {
+                pantalla.value += input.value; // Agregar el valor del input a la pantalla
+                    });
+                });       
+                //------------------------------------------------------------------------------ 
+                const botonesOperaciones = document.querySelectorAll('#operacion');
+                
+                botonesOperaciones.forEach((boton) => {
+                    boton.addEventListener('click', () => {
+                    pantalla.value += ' '+ boton.textContent +' '; // Agregar el valor del input a la pantalla
+                        });
+                    });      
+                //-------------------------------------------------------------------------------
+                function calcular() {
+                    // Obtener el valor del input
+                    const pantallaValue = document.getElementById('pantalla').value;
+                
+                    // Separar los números y el operador
+                    const partes = pantallaValue.split(' '); // Suponemos que el usuario ingresa un espacio entre cada parte de la operación
+                    const num1 = parseFloat(partes[0]);
+                    const operador = partes[1];
+                    const num2 = parseFloat(partes[2]);
+                
+
+                    
+                    // Realizar la operación
+                    let resultado;
+                    switch (operador) {
+                        case '+':
+                            resultado = num1 + num2;
+                            break;
+                        case '-':
+                            resultado = num1 - num2;
+                            break;
+                        case '*':
+                            resultado = num1 * num2;
+                            break;
+                        case '/':
+                            resultado = num1 / num2;
+                            break;
+                        default:
+                        pantalla.value = 'Operador no válido';
+                            return;
+                    }
+                
+                    // Mostrar el resultado
+                    resultado2 = String(resultado);
+                    pantalla.value = resultado2;
+                    //console.log(panatalla.value);
+                }
+                   
+                function borrarUltimo(){
+                    let valor = pantalla.value;  
+                    valor = valor.slice(0, -1);
+                    pantalla.value = valor;
+                }
+                function borrarTodo(){
+                    pantalla.value = '';
+                }
+                //-------------------------------------------------------------------------------   
+/* document.addEventListener('keydown', function(event) {      
+
+    if (event.key === '*') {
+        var valor = pantalla.value; 
+        num1= parseFloat(valor);         
+        pantalla.value='';
+    }
+    if (event.key === 'Enter') {
+
+        var valor = pantalla.value;   
+        num2 = parseFloat(valor);
+        result = num1*num2;
+        pantalla.value = result;      
+        console.log(num1, '*', num2);        
+      }   
+});*/
+       </script>    
+</body>
+</html>
