@@ -18,7 +18,7 @@
              background-color: blue;
          }
          .mainContainer{
-            margin: 50px 10px;
+            margin: 30px 10px;
             width: 380px;
             display: flex;    
             flex-direction: column;     
@@ -30,7 +30,7 @@
             background-color: brown;
          }
          .pantalla{
-           width: 100%;
+           width: 100%;           
          }
          .pantalla input{
              background-color: black;
@@ -57,13 +57,21 @@
              border-radius: 1em;    
              font-size: 1.2rem;
              font-weight: bolder;
-         }
-         .numeros button{
+         }        
+         .operacion{
             border-radius: 1em;    
             font-size: 1.2rem;
             font-weight: bolder;
             height: 60px;
             background-color: aqua;
+         }
+         .on{
+            border-radius: 1em; 
+            font-size: 1.2rem;
+            font-weight: bolder; 
+            height: 60px;  
+            background-color: red;
+            border-color: aliceblue;
          }
          .numeros input:active{
             background-color: blueviolet;
@@ -79,35 +87,38 @@
         <div class="pantalla">
             <input type="text" id="pantalla" >
         </div>
-        <div class="numeros">     
-           
-            <button></button>
-            <button></button>
-            <button id="borrarTodo" onclick="borrarTodo()">AC</button>
-            <button id="borrar" onclick="borrarUltimo()" ><i class="bi bi-backspace-fill"></i></button>       
-                     
-            <input type="button" id="n1" value="7">
-            <input type="button" id="n2" value="8">
-            <input type="button" id="n3" value="9">            
-            <button class="operacion" id="operacion" >/</button>          
+        <div class="numeros">          
+            <button class="operacion"></button>
+            <button class="operacion"></button>
+            <button class="operacion"></button>           
+            <button class="operacion" id="borrar" onclick="borrarUltimo()" ><i class="bi bi-backspace-fill"></i></button>       
+            <input type="button" id="n7" value="7">
+            <input type="button" id="n8" value="8">
+            <input type="button" id="n9" value="9">            
+            <button class="operacion" id="operacion" >÷</button>          
             <input type="button" id="n4" value="4">
             <input type="button" id="n5" value="5">
             <input type="button" id="n6" value="6">   
-            <button class="operacion" id="operacion" >*</button>         
-            <input type="button" id="n7" value="1">
-            <input type="button" id="n8" value="2">
-            <input type="button" id="n9" value="3">  
+            <button class="operacion" id="operacion" >x</button>         
+            <input type="button" id="n1" value="1">
+            <input type="button" id="n2" value="2">
+            <input type="button" id="n3" value="3">  
             <button class="operacion" id="operacion" >-</button>        
             <input type="button" id="n0" value="0"> 
-            <input type="button" id="n6" value="0">
-            <button class="resultado" id="resultadon" onclick="calcular()">=</button>  
-            <button class="operacion" id="operacion" >+</button>  
+            <input type="button" id="n00" value="00">
+            <input type="button" id="n000" value="000">
+            <button class="operacion" id="operacion" >+</button> 
+            <button class="on" id="on" >ON</button> 
+            <input type="button" id="np" value="."> 
+            <button class="operacion" id="ac" onclick="borrarTodo()">AC</button>                     
+            <button class="operacion" id="resultadon" onclick="calcular()">=</button>  
+             
             
     </div>
     </div>
 <!---------------------------------JS---------------------------------------------------------->   
     <script>      
-                //--------------------------------------------------------------------------------        
+                //--------------------MOSTRAR LOS ELEMENTOS DEL TECLADO------------------------        
                 const pantalla = document.getElementById('pantalla');
                pantalla.focus();
                 // Obtener todos los inputs numéricos
@@ -119,7 +130,7 @@
                 pantalla.value += input.value; // Agregar el valor del input a la pantalla
                     });
                 });       
-                //------------------------------------------------------------------------------ 
+                //------------------------ESCRIBIR EN LA PANTALLA----------------------------------- 
                 const botonesOperaciones = document.querySelectorAll('#operacion');
                 
                 botonesOperaciones.forEach((boton) => {
@@ -138,7 +149,6 @@
                     const operador = partes[1];
                     const num2 = parseFloat(partes[2]);
                 
-
                     
                     // Realizar la operación
                     let resultado;
@@ -149,17 +159,16 @@
                         case '-':
                             resultado = num1 - num2;
                             break;
-                        case '*':
+                        case 'x':
                             resultado = num1 * num2;
                             break;
-                        case '/':
+                        case '÷':
                             resultado = num1 / num2;
                             break;
                         default:
                         pantalla.value = 'Operador no válido';
                             return;
-                    }
-                
+                    }                
                     // Mostrar el resultado
                     resultado2 = String(resultado);
                     pantalla.value = resultado2;
@@ -174,23 +183,23 @@
                 function borrarTodo(){
                     pantalla.value = '';
                 }
-                //-------------------------------------------------------------------------------   
-/* document.addEventListener('keydown', function(event) {      
-
-    if (event.key === '*') {
-        var valor = pantalla.value; 
-        num1= parseFloat(valor);         
-        pantalla.value='';
-    }
-    if (event.key === 'Enter') {
-
-        var valor = pantalla.value;   
-        num2 = parseFloat(valor);
-        result = num1*num2;
-        pantalla.value = result;      
-        console.log(num1, '*', num2);        
-      }   
-});*/
+                //----------------------------VALIDAR TECLAS---------------------------------------------------   
+                function validarCaracter(tecla) {
+                    // Expresión regular para caracteres permitidos: dígitos del 0 al 9, ÷, +, -, x, %
+                    const patron = /[0-9÷+\-x%]/;
+                    return patron.test(tecla);
+                }
+        
+                // Obtener el input
+               // const input = document.getElementById('numeroInput');
+        
+                // Evento keydown para validar el carácter ingresado
+                pantalla.addEventListener('keydown', function(event) {
+                    if (!validarCaracter(event.key)) {
+                        // Si el carácter no es válido, prevenir su inserción en el input
+                        event.preventDefault();
+                    }
+                });
        </script>    
 </body>
 </html>
