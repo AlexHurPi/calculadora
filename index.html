@@ -33,7 +33,7 @@
             width: 100%;   
          }
          .pantalla {             
-             background-color: white;
+             background-color: black;
              height: 3em;
              width: 100%;
              border: 2px white solid;
@@ -96,7 +96,7 @@
 
     <div class="mainContainer">
         <div class="contPantalla">
-            <input class="pantalla" type="text" inputmode="numeric" id="pantalla" readonly>
+            <input class="pantalla" type="text" inputmode="numeric" id="pantalla" readonly value="0">
             <textarea class="pantalla2" name="pantalla2" id="pantalla2" rows="4" cols="40" readonly ></textarea>
         </div>        
         <div class="numeros">                     
@@ -137,9 +137,13 @@
     // Obtener todos los inputs numéricos
     const inputsNumericos = document.querySelectorAll('#numero');
     // Iterar sobre los inputs numéricos y agregar un manejador de eventos
-    inputsNumericos.forEach((input) => {
-    input.addEventListener('click', () => {
-    pantalla.value += input.value; // Agregar el valor del input a la pantalla
+    inputsNumericos.forEach((input) => {       
+        input.addEventListener('click', () => {       
+        if(pantalla.value==='0'){
+            pantalla.value = '';
+        }
+            pantalla.value += input.value;
+          // Agregar el valor del input a la pantalla
         });
     });    
     
@@ -268,11 +272,11 @@
         pantalla.value = valor;
         }
     function borrarTodo(){
-        pantalla.value = '';
+        pantalla.value = '0';
         pantalla2.value = '';
         }
 
-    const on = document.getElementById('on');
+    /*const on = document.getElementById('on');
     function onc(){       
         if(on.textContent ==='ON'){
             on.textContent = 'OFF';
@@ -285,7 +289,7 @@
             on.style.backgroundColor = 'green'; 
             pantalla2.value = '';
         }
-    }    
+    }    */
     //------------VALIDAR TECLAS Y SOLO PERMITE NUMEROS Y OPERADORES---------------------------------------------------   
         function validarCaracter(tecla) {
         // Expresión regular para caracteres permitidos: dígitos del 0 al 9, ÷, +, -, x, %
