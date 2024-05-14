@@ -92,21 +92,21 @@
             <button class="operacion"></button>
             <button class="operacion"></button>           
             <button class="operacion" id="borrar" onclick="borrarUltimo()" ><i class="bi bi-backspace-fill"></i></button>       
-            <input type="button" id="n7" value="7">
-            <input type="button" id="n8" value="8">
-            <input type="button" id="n9" value="9">            
-            <button class="operacion" id="operacion" >÷</button>          
-            <input type="button" id="n4" value="4">
-            <input type="button" id="n5" value="5">
-            <input type="button" id="n6" value="6">   
-            <button class="operacion" id="operacion" >x</button>         
-            <input type="button" id="n1" value="1">
-            <input type="button" id="n2" value="2">
-            <input type="button" id="n3" value="3">  
+            <input type="button" id="numero" value="7">
+            <input type="button" id="numero" value="8">
+            <input type="button" id="numero" value="9">            
+            <button class="operacion" id="operacion" >/</button>          
+            <input type="button" id="numero" value="4">
+            <input type="button" id="numero" value="5">
+            <input type="button" id="numero" value="6">   
+            <button class="operacion" id="operacion" >*</button>         
+            <input type="button" id="numero" value="1">
+            <input type="button" id="numero" value="2">
+            <input type="button" id="numero" value="3">  
             <button class="operacion" id="operacion" >-</button>        
-            <input type="button" id="n0" value="0"> 
-            <input type="button" id="n00" value="00">
-            <input type="button" id="n000" value="000">
+            <input type="button" id="numero" value="0"> 
+            <input type="button" id="numero" value="00">
+            <input type="button" id="numero" value="000">
             <button class="operacion" id="operacion" >+</button> 
             <button class="on" id="on" >ON</button> 
             <input type="button" id="np" value="."> 
@@ -129,7 +129,7 @@
     pantalla.value += input.value; // Agregar el valor del input a la pantalla
         });
     });       
-    //------------------------ESCRIBIR EN LA PANTALLA----------------------------------- 
+    //--------------ESCRIBIR EN LA PANTALLA CON EL TECLADO DEL PC----------------------------------- 
     // Obtener la pantalla y los botones de operación
     const botonesOperaciones = document.querySelectorAll('#operacion');
 
@@ -167,7 +167,7 @@
         pantalla.value += ' ' + operador + ' '; // Agregar el operador a la pantalla
         }
     });
-
+    //-------------ESCRIBIR EN LA PANTALLA CON LOS BOTONES DE LA CALCULADORA--------------------------
     // Agregar eventos de clic a los botones de operación
     botonesOperaciones.forEach((boton) => {
     boton.addEventListener('click', () => {
@@ -176,12 +176,76 @@
     });
 
     //-------------------------FUNCION CALCULAR------------------------------------------------------
+       
     function calcular() {                   
         // Obtener el valor del input
         const pantallaValue = document.getElementById('pantalla').value; 
-        // Separar los números y el operador
-        const partes = pantallaValue.split(' '); // Suponemos que el usuario ingresa un espacio entre cada parte de la operación
-        const num1 = parseFloat(partes[0]);
+        // Separar los números y los operadores
+        const partes = pantallaValue.split(/(\+|\-|\*|\/)/); // Usar una expresión regular para dividir la expresión manteniendo los operadores
+        const numeros = [];
+        const operadores = [];
+        
+        // Separar los números y los operadores en arrays diferentes
+        for(let i = 0; i < partes.length; i++) {
+            const parte = partes[i].trim(); // Eliminar espacios en blanco alrededor de cada parte
+            if (parte !== '') { // Ignorar partes vacías (espacios)
+                if (isNaN(parseFloat(parte))) { // Verificar si es un operador
+                    operadores.push(parte);
+                } else {
+                    numeros.push(parseFloat(parte));
+                }
+            }
+        }
+        
+        // Realizar primero las multiplicaciones y divisiones
+        for (let i = 0; i < operadores.length; i++) {
+            if (operadores[i] === '*' || operadores[i] === '/') {
+                const operador = operadores[i];
+                const num1 = numeros[i];
+                const num2 = numeros[i + 1];
+                let resultado;
+                if (operador === '*') {
+                    resultado = num1 * num2;
+                } else if (operador === '/') {
+                    if (num2 === 0) {
+                        pantalla.value ="Error: División por cero.";
+                        return;
+                    }
+                    resultado = num1 / num2;
+                }
+                // Reemplazar los números y el operador por el resultado
+                numeros.splice(i, 2, resultado);
+                operadores.splice(i, 1);
+                i--; // Retroceder para revisar el siguiente operador
+            }
+        }
+        
+        // Luego, realizar las sumas y restas
+        let resultado = numeros[0];
+        for (let i = 0; i < operadores.length; i++) {
+            const operador = operadores[i];
+            const siguienteNumero = numeros[i + 1];
+            if (operador === '+') {
+                resultado += siguienteNumero;
+            } else if (operador === '-') {
+                resultado -= siguienteNumero;
+            }
+        }
+        pantalla.value = resultado;
+        console.log("Resultado:", resultado);
+    }
+    
+    
+       
+       
+       
+       
+       
+       
+       
+       
+       
+        /*const num1 = parseFloat(partes[0]);
         const operador = partes[1];
         const num2 = parseFloat(partes[2]);
                   
@@ -203,15 +267,16 @@
             default:
                 pantalla.value = 'Operador no válido';
             return;
-            }                
+            }   */     
+//---------------------------------------------------------------------------//
         //Esta funcion es para que muestre el resultado separado por miles
-        function formatearNumeroConSeparadores(numero) {
+       /* function formatearNumeroConSeparadores(numero) {
         return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }               
         const numeroFormateado = formatearNumeroConSeparadores(resultado);                   
         // Mostrar el resultado 
         pantalla.value = String(numeroFormateado);              
-    }
+    }*/
     //-----------------FUNCIONES DE ALGUNAS TECLAS--------------------------------------------------------------               
     function borrarUltimo(){
         let valor = pantalla.value;  
@@ -224,7 +289,7 @@
     //------------VALIDAR TECLAS Y SOLO PERMITE NUMEROS Y OPERADORES---------------------------------------------------   
         function validarCaracter(tecla) {
         // Expresión regular para caracteres permitidos: dígitos del 0 al 9, ÷, +, -, x, %
-        const patron = /[0-9÷+\-x%]/;
+        const patron = /[0-9÷+\-x*%]/;
         return patron.test(tecla);
             }
         // Obtener el input
