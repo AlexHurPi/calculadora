@@ -85,7 +85,7 @@
 
     <div class="mainContainer">
         <div class="pantalla">
-            <input type="text" id="pantalla" >
+            <input type="text" id="pantalla" inputmode="numeric" >
         </div>
         <div class="numeros">          
             <button class="operacion"></button>
@@ -117,89 +117,126 @@
     </div>
     </div>
 <!---------------------------------JS---------------------------------------------------------->   
-    <script>      
-                //--------------------MOSTRAR LOS ELEMENTOS DEL TECLADO------------------------        
-                const pantalla = document.getElementById('pantalla');
-               pantalla.focus();
-                // Obtener todos los inputs numéricos
-                const inputsNumericos = document.querySelectorAll('input[id^="n"]');
+<script>      
+    //--------------------MOSTRAR LOS ELEMENTOS DEL TECLADO------------------------        
+    const pantalla = document.getElementById('pantalla');
+    pantalla.focus();
+    // Obtener todos los inputs numéricos
+    const inputsNumericos = document.querySelectorAll('input[id^="n"]');
+    // Iterar sobre los inputs numéricos y agregar un manejador de eventos
+    inputsNumericos.forEach((input) => {
+    input.addEventListener('click', () => {
+    pantalla.value += input.value; // Agregar el valor del input a la pantalla
+        });
+    });       
+    //------------------------ESCRIBIR EN LA PANTALLA----------------------------------- 
+    // Obtener la pantalla y los botones de operación
+    const botonesOperaciones = document.querySelectorAll('#operacion');
 
-                // Iterar sobre los inputs numéricos y agregar un manejador de eventos
-                inputsNumericos.forEach((input) => {
-                input.addEventListener('click', () => {
-                pantalla.value += input.value; // Agregar el valor del input a la pantalla
-                    });
-                });       
-                //------------------------ESCRIBIR EN LA PANTALLA----------------------------------- 
-                const botonesOperaciones = document.querySelectorAll('#operacion');
-                
-                botonesOperaciones.forEach((boton) => {
-                    boton.addEventListener('click', () => {
-                    pantalla.value += ' '+ boton.textContent +' '; // Agregar el valor del input a la pantalla
-                        });
-                    });      
-                //-------------------------------------------------------------------------------
-                function calcular() {
-                    // Obtener el valor del input
-                    const pantallaValue = document.getElementById('pantalla').value;
-                
-                    // Separar los números y el operador
-                    const partes = pantallaValue.split(' '); // Suponemos que el usuario ingresa un espacio entre cada parte de la operación
-                    const num1 = parseFloat(partes[0]);
-                    const operador = partes[1];
-                    const num2 = parseFloat(partes[2]);
-                
-                    
-                    // Realizar la operación
-                    let resultado;
-                    switch (operador) {
-                        case '+':
-                            resultado = num1 + num2;
-                            break;
-                        case '-':
-                            resultado = num1 - num2;
-                            break;
-                        case 'x':
-                            resultado = num1 * num2;
-                            break;
-                        case '÷':
-                            resultado = num1 / num2;
-                            break;
-                        default:
-                        pantalla.value = 'Operador no válido';
-                            return;
-                    }                
-                    // Mostrar el resultado
-                    resultado2 = String(resultado);
-                    pantalla.value = resultado2;
-                    //console.log(panatalla.value);
+    // Función para manejar las pulsaciones de teclas
+    document.addEventListener('keydown', (event) => {
+    // Obtener el código de la tecla presionada
+    const keyCode = event.keyCode;
+    
+    // Verificar si la tecla presionada es un número o un operador
+    if ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105)) {
+        // Teclas de números (48-57 son las teclas numéricas, 96-105 son las teclas numéricas del teclado numérico)
+        pantalla.value += event.key; // Agregar el valor de la tecla a la pantalla
+    } else if (keyCode === 187 || keyCode === 107 || keyCode === 189 || keyCode === 109 || keyCode === 191 || keyCode === 111) {
+        // Teclas de operadores (+, -, *, /)
+        let operador;
+        switch (keyCode) {
+            case 187:
+            case 107:
+                operador = '+';
+                break;
+            case 189:
+            case 109:
+                operador = '-';
+                break;
+            case 191:
+            case 111:
+                operador = '/';
+                break;
+            case 56:
+                operador = '*';
+                break;
+            default:
+                break;
+        }
+        pantalla.value += ' ' + operador + ' '; // Agregar el operador a la pantalla
+        }
+    });
+
+    // Agregar eventos de clic a los botones de operación
+    botonesOperaciones.forEach((boton) => {
+    boton.addEventListener('click', () => {
+        pantalla.value += ' ' + boton.textContent + ' '; // Agregar el valor del botón a la pantalla
+        });
+    });
+
+    //-------------------------FUNCION CALCULAR------------------------------------------------------
+    function calcular() {                   
+        // Obtener el valor del input
+        const pantallaValue = document.getElementById('pantalla').value; 
+        // Separar los números y el operador
+        const partes = pantallaValue.split(' '); // Suponemos que el usuario ingresa un espacio entre cada parte de la operación
+        const num1 = parseFloat(partes[0]);
+        const operador = partes[1];
+        const num2 = parseFloat(partes[2]);
+                  
+        // Realizar la operación
+        let resultado;
+        switch (operador) {
+            case '+':
+                resultado = num1 + num2;
+            break;
+            case '-':
+                resultado = num1 - num2;
+            break;
+            case 'x':
+                resultado = num1 * num2;
+            break;
+            case '÷':
+                resultado = num1 / num2;
+            break;
+            default:
+                pantalla.value = 'Operador no válido';
+            return;
+            }                
+        //Esta funcion es para que muestre el resultado separado por miles
+        function formatearNumeroConSeparadores(numero) {
+        return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }               
+        const numeroFormateado = formatearNumeroConSeparadores(resultado);                   
+        // Mostrar el resultado 
+        pantalla.value = String(numeroFormateado);              
+    }
+    //-----------------FUNCIONES DE ALGUNAS TECLAS--------------------------------------------------------------               
+    function borrarUltimo(){
+        let valor = pantalla.value;  
+        valor = valor.slice(0, -1);
+        pantalla.value = valor;
+        }
+    function borrarTodo(){
+        pantalla.value = '';
+        }
+    //------------VALIDAR TECLAS Y SOLO PERMITE NUMEROS Y OPERADORES---------------------------------------------------   
+        function validarCaracter(tecla) {
+        // Expresión regular para caracteres permitidos: dígitos del 0 al 9, ÷, +, -, x, %
+        const patron = /[0-9÷+\-x%]/;
+        return patron.test(tecla);
+            }
+        // Obtener el input
+        // Evento keydown para validar el carácter ingresado
+        pantalla.addEventListener('keydown', function(event) {
+            if (!validarCaracter(event.key)) {
+            // Si el carácter no es válido, prevenir su inserción en el input
+                event.preventDefault();
                 }
-                   
-                function borrarUltimo(){
-                    let valor = pantalla.value;  
-                    valor = valor.slice(0, -1);
-                    pantalla.value = valor;
-                }
-                function borrarTodo(){
-                    pantalla.value = '';
-                }
-                //----------------------------VALIDAR TECLAS---------------------------------------------------   
-                function validarCaracter(tecla) {
-                    // Expresión regular para caracteres permitidos: dígitos del 0 al 9, ÷, +, -, x, %
-                    const patron = /[0-9÷+\-x%]/;
-                    return patron.test(tecla);
-                }
-        
-                // Obtener el input
-               // const input = document.getElementById('numeroInput');
-        
-                // Evento keydown para validar el carácter ingresado
-                pantalla.addEventListener('keydown', function(event) {
-                    if (!validarCaracter(event.key)) {
-                        // Si el carácter no es válido, prevenir su inserción en el input
-                        event.preventDefault();
-                    }
-                });
-       </script>    
+        });
+    //--------------------------------------------------------------------------------
+               
+</script>    
 </body>
 </html>
