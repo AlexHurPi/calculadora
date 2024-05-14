@@ -95,9 +95,10 @@
     <div class="mainContainer">
         <div class="contPantalla">
             <input class="pantalla" type="text" id="pantalla" inputmode="numeric" >
-            <input class="pantalla2" type="text" readonly id="pantalla2">
-        </div>
-        <div class="numeros">          
+            
+             <textarea class="pantalla2" name="pantalla2" id="pantalla2" rows="4" cols="40" ></textarea>
+        </div>        
+        <div class="numeros">                     
             <button class="operacion"></button>
             <button class="operacion"></button>
             <button class="operacion"></button>           
@@ -192,7 +193,7 @@
         const pantallaValue = document.getElementById('pantalla').value; 
         const pantalla2 = document.getElementById('pantalla2');
 
-        pantalla2.value = pantallaValue;
+        
         // Separar los números y los operadores
         const partes = pantallaValue.split(/(\+|\-|\*|\/)/); // Usar una expresión regular para dividir la expresión manteniendo los operadores
         const numeros = [];
@@ -244,52 +245,17 @@
                 resultado -= siguienteNumero;
             }
         }
-        pantalla.value = resultado;
+         //Esta funcion es para que muestre el resultado separado por miles
+         function formatearNumeroConSeparadores(numero) {
+            return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }               
+            const numeroFormateado = formatearNumeroConSeparadores(resultado);                   
+            const numeroFormateado2 = formatearNumeroConSeparadores(pantallaValue);
+            // Mostrar el resultado 
+            pantalla.value = resultado;    
         
-    }
-    
-    
-       
-       
-       
-       
-       
-       
-       
-       
-       
-        /*const num1 = parseFloat(partes[0]);
-        const operador = partes[1];
-        const num2 = parseFloat(partes[2]);
-                  
-        // Realizar la operación
-        let resultado;
-        switch (operador) {
-            case '+':
-                resultado = num1 + num2;
-            break;
-            case '-':
-                resultado = num1 - num2;
-            break;
-            case 'x':
-                resultado = num1 * num2;
-            break;
-            case '÷':
-                resultado = num1 / num2;
-            break;
-            default:
-                pantalla.value = 'Operador no válido';
-            return;
-            }   */     
-//---------------------------------------------------------------------------//
-        //Esta funcion es para que muestre el resultado separado por miles
-       /* function formatearNumeroConSeparadores(numero) {
-        return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        }               
-        const numeroFormateado = formatearNumeroConSeparadores(resultado);                   
-        // Mostrar el resultado 
-        pantalla.value = String(numeroFormateado);              
-    }*/
+            pantalla2.value = numeroFormateado2 + ' = ' + numeroFormateado;
+    }  
     //-----------------FUNCIONES DE ALGUNAS TECLAS--------------------------------------------------------------               
     function borrarUltimo(){
         let valor = pantalla.value;  
@@ -298,6 +264,7 @@
         }
     function borrarTodo(){
         pantalla.value = '';
+        pantalla2.value = '';
         }
     //------------VALIDAR TECLAS Y SOLO PERMITE NUMEROS Y OPERADORES---------------------------------------------------   
         function validarCaracter(tecla) {
