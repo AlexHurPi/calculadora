@@ -42,6 +42,7 @@
              font-size: 1.5rem;
              text-align: right;
              overflow: hidden;
+             display: none;
          }
          .pantalla2{
             background-color: brown;
@@ -95,7 +96,7 @@
 
     <div class="mainContainer">
         <div class="contPantalla">
-            <input class="pantalla" type="text" inputmode="numeric" id="pantalla" readonly>
+            <input class="pantalla" type="text" inputmode="numeric" id="pantalla" readonly >
             <textarea class="pantalla2" name="pantalla2" id="pantalla2" rows="4" cols="40" readonly></textarea>
         </div>        
         <div class="numeros">                     
@@ -119,8 +120,8 @@
             <input type="button" id="numero" value="00">
             <input type="button" id="numero" value="000">
             <button class="operacion" id="operacion" >+</button> 
-            <button class="on" id="on" >ON</button> 
-            <input type="button" id="np" value="."> 
+            <button class="on" id="on" onclick="on()" >ON</button> 
+            <input type="button" id="numero" value="."> 
             <button class="operacion" id="ac" onclick="borrarTodo()">AC</button>                     
             <button class="operacion" id="resultadon" onclick="calcular()">=</button>      
             
@@ -269,6 +270,11 @@
         pantalla.value = '';
         pantalla2.value = '';
         }
+    function on(){
+        if(pantalla.style.display === 'none'){
+        pantalla.style.display = 'block';
+        }else{ pantalla.style.display = 'none';}
+    }    
     //------------VALIDAR TECLAS Y SOLO PERMITE NUMEROS Y OPERADORES---------------------------------------------------   
         function validarCaracter(tecla) {
         // Expresión regular para caracteres permitidos: dígitos del 0 al 9, ÷, +, -, x, %
