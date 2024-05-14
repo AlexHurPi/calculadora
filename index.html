@@ -29,10 +29,10 @@
             border-radius: 1em;
             background-color: brown;
          }
-         .pantalla{
-           width: 100%;           
+         .contPantalla{
+            width: 100%;   
          }
-         .pantalla input{
+         .pantalla {             
              background-color: black;
              height: 3em;
              width: 100%;
@@ -41,6 +41,15 @@
              color: aliceblue;
              font-size: 1.5rem;
              text-align: right;
+         }
+         .pantalla2{
+            background-color: brown;
+            width: 100%;
+            margin-top: 10px;
+            border: none;
+            font-size: large;
+            color: white;
+            text-align: right;
          }
          .numeros{
              width: 100%;
@@ -84,8 +93,9 @@
 <body>
 
     <div class="mainContainer">
-        <div class="pantalla">
-            <input type="text" id="pantalla" inputmode="numeric" >
+        <div class="contPantalla">
+            <input class="pantalla" type="text" id="pantalla" inputmode="numeric" >
+            <input class="pantalla2" type="text" readonly id="pantalla2">
         </div>
         <div class="numeros">          
             <button class="operacion"></button>
@@ -180,6 +190,9 @@
     function calcular() {                   
         // Obtener el valor del input
         const pantallaValue = document.getElementById('pantalla').value; 
+        const pantalla2 = document.getElementById('pantalla2');
+
+        pantalla2.value = pantallaValue;
         // Separar los números y los operadores
         const partes = pantallaValue.split(/(\+|\-|\*|\/)/); // Usar una expresión regular para dividir la expresión manteniendo los operadores
         const numeros = [];
@@ -232,7 +245,7 @@
             }
         }
         pantalla.value = resultado;
-        console.log("Resultado:", resultado);
+        
     }
     
     
