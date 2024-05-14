@@ -14,8 +14,8 @@
          }
          body{
              display: flex;
-             justify-content: center;
-             background-color: blue;
+             justify-content: center;                      
+             background-color: blue;             
          }
          .mainContainer{
             margin: 30px 10px;
@@ -41,6 +41,7 @@
              color: aliceblue;
              font-size: 1.5rem;
              text-align: right;
+             overflow: hidden;
          }
          .pantalla2{
             background-color: brown;
@@ -94,16 +95,15 @@
 
     <div class="mainContainer">
         <div class="contPantalla">
-            <input class="pantalla" type="text" id="pantalla" inputmode="numeric" >
-            
-             <textarea class="pantalla2" name="pantalla2" id="pantalla2" rows="4" cols="40" ></textarea>
+            <input class="pantalla" type="tel" inputmode="tel" pattern="[0-9+*/.-]*" maxlength="20" id="pantalla"  >
+            <textarea class="pantalla2" name="pantalla2" id="pantalla2" rows="4" cols="40" readonly></textarea>
         </div>        
         <div class="numeros">                     
             <button class="operacion"></button>
             <button class="operacion"></button>
             <button class="operacion"></button>           
             <button class="operacion" id="borrar" onclick="borrarUltimo()" ><i class="bi bi-backspace-fill"></i></button>       
-            <input type="button" id="numero" value="7">
+            <input type="button" id="numero" value="7" >
             <input type="button" id="numero" value="8">
             <input type="button" id="numero" value="9">            
             <button class="operacion" id="operacion" >/</button>          
@@ -122,24 +122,25 @@
             <button class="on" id="on" >ON</button> 
             <input type="button" id="np" value="."> 
             <button class="operacion" id="ac" onclick="borrarTodo()">AC</button>                     
-            <button class="operacion" id="resultadon" onclick="calcular()">=</button>  
-             
+            <button class="operacion" id="resultadon" onclick="calcular()">=</button>      
             
     </div>
     </div>
 <!---------------------------------JS---------------------------------------------------------->   
 <script>      
+  
     //--------------------MOSTRAR LOS ELEMENTOS DEL TECLADO------------------------        
     const pantalla = document.getElementById('pantalla');
     pantalla.focus();
     // Obtener todos los inputs numéricos
-    const inputsNumericos = document.querySelectorAll('input[id^="n"]');
+    const inputsNumericos = document.querySelectorAll('input');
     // Iterar sobre los inputs numéricos y agregar un manejador de eventos
     inputsNumericos.forEach((input) => {
     input.addEventListener('click', () => {
     pantalla.value += input.value; // Agregar el valor del input a la pantalla
         });
-    });       
+    });    
+    
     //--------------ESCRIBIR EN LA PANTALLA CON EL TECLADO DEL PC----------------------------------- 
     // Obtener la pantalla y los botones de operación
     const botonesOperaciones = document.querySelectorAll('#operacion');
@@ -178,14 +179,16 @@
         pantalla.value += ' ' + operador + ' '; // Agregar el operador a la pantalla
         }
     });
-    //-------------ESCRIBIR EN LA PANTALLA CON LOS BOTONES DE LA CALCULADORA--------------------------
+    //-----ESCRIBIR EN LA PANTALLA LOS BOTONES DE OPERACIONES CON ESPACIOS EVITANDO DIGITAR SIGNOS CUANDO LA PANTALLA ESTA VACIA--------------------------
     // Agregar eventos de clic a los botones de operación
     botonesOperaciones.forEach((boton) => {
     boton.addEventListener('click', () => {
-        pantalla.value += ' ' + boton.textContent + ' '; // Agregar el valor del botón a la pantalla
+        if(pantalla.value != ''){
+        pantalla.value += ' ' + boton.textContent + ' ';
+        } // Agregar el valor del botón a la pantalla
         });
     });
-
+      
     //-------------------------FUNCION CALCULAR------------------------------------------------------
        
     function calcular() {                   
@@ -269,7 +272,7 @@
     //------------VALIDAR TECLAS Y SOLO PERMITE NUMEROS Y OPERADORES---------------------------------------------------   
         function validarCaracter(tecla) {
         // Expresión regular para caracteres permitidos: dígitos del 0 al 9, ÷, +, -, x, %
-        const patron = /[0-9÷+\-x*%]/;
+        const patron = /[0-9÷+\*-x%]/;
         return patron.test(tecla);
             }
         // Obtener el input
