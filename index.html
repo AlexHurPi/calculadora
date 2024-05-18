@@ -59,6 +59,18 @@
             border-right: 2px white solid;
             text-align: right;
          }
+         .copiar{
+            background-color: blueviolet;
+            color: white;
+            padding: 5px;
+            margin-top: 5px;
+            border-radius: 20px;
+         }
+         .lblCopiar{
+            color: white;
+            margin-left: 5px;
+            display: none;
+        }
          .numeros{
              width: 100%;
              display: grid;
@@ -103,6 +115,8 @@
         <div class="contPantalla">
             <textarea class="pantalla" type="text" inputmode="numeric" id="pantalla" rows="4" cols="40" readonly value="0"></textarea>
             <textarea class="pantalla2" name="pantalla2" id="pantalla2" rows="4" cols="40" readonly ></textarea>
+        <button class="copiar" id="btnCopiar">Copiar</button>
+       <label class="lblCopiar" for="btnCopiar" id="lblCopiar">Operacion copiada al portapapeles</label>
         </div>        
         <div class="numeros">                     
             <button class="operacion" id="operacion"></button>
@@ -317,11 +331,11 @@
             pantalla2.style.backgroundColor = 'white'; 
             on.style.backgroundColor = 'green'; 
             pantalla2.value = '';
+            lblCopiar.style.display = 'none';
         }
     }    
 
-    const punto = document.getElementById('punto');   
-    
+    const punto = document.getElementById('punto');     
     punto.addEventListener('click', () => {
         // Obtener el último número en la pantalla
         var numeros = pantalla.value.split(/[\+\-\*\/\s]/);
@@ -333,7 +347,21 @@
         }
     });
     
-    
+    const btnCopiar = document.getElementById('btnCopiar');
+    const lblCopiar = document.getElementById('lblCopiar');
+    btnCopiar.addEventListener('click', () => {
+        // Selecciona el contenido del textarea
+        pantalla2.select();
+        // Copia el contenido seleccionado al portapapeles
+        document.execCommand('copy');
+         // Deselecciona el texto
+        window.getSelection().removeAllRanges();
+
+        lblCopiar.style.display = 'inline';
+        alert('Texto copiado al portapapeles');
+
+
+    });
     //------------VALIDAR TECLAS Y SOLO PERMITE NUMEROS Y OPERADORES---------------------------------------------------   
         function validarCaracter(tecla) {
         // Expresión regular para caracteres permitidos: dígitos del 0 al 9, ÷, +, -, x, %
