@@ -116,7 +116,8 @@
         <div class="contPantalla">
             <textarea class="pantalla" type="text" inputmode="numeric" id="pantalla" rows="4" cols="40" readonly value="0"></textarea>
             <textarea class="pantalla2" name="pantalla2" id="pantalla2" rows="4" cols="40" readonly ></textarea>
-        <button class="copiar" id="btnCopiar">Copiar</button>      
+        <button class="copiar" id="btnCopiar">Copiar</button> 
+        <button class="copiar" id="compartir">Compartir</button> 
         </div>        
         <div class="numeros">                     
             <button class="operacion" id="operacion"></button>
@@ -363,10 +364,28 @@
             icon: 'success',
             confirmButtonText: 'Aceptar'
           }).then((result) => {
-            // Código que se ejecuta después de que el usuario hace clic en "Aceptar"
-          });
-        } 
+           
+          });    
+        }        
+    });
 
+    document.getElementById('compartir').addEventListener('click', async () => {
+        const transactionDetails = document.getElementById('pantalla2').value;
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Detalles de la Transacción',
+                    text: transactionDetails,
+                    url: window.location.href
+                });
+                console.log('Transacción compartida exitosamente');
+            } catch (error) {
+                console.error('Error al compartir:', error);
+            }
+        } else {
+            alert('La API de Web Share no es compatible con tu navegador.');
+        }
     });
     //------------VALIDAR TECLAS Y SOLO PERMITE NUMEROS Y OPERADORES---------------------------------------------------   
         function validarCaracter(tecla) {
