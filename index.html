@@ -349,6 +349,7 @@
     const btnCopiar = document.getElementById('btnCopiar');
     const lblCopiar = document.getElementById('lblCopiar');
     btnCopiar.addEventListener('click', () => {
+      if(pantalla2.value != '')  {
         // Selecciona el contenido del textarea
         pantalla2.select();
         // Copia el contenido seleccionado al portapapeles
@@ -364,7 +365,7 @@
           }).then((result) => {
             // Código que se ejecuta después de que el usuario hace clic en "Aceptar"
           });
-          
+        } 
 
     });
     //------------VALIDAR TECLAS Y SOLO PERMITE NUMEROS Y OPERADORES---------------------------------------------------   
