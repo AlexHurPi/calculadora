@@ -15,7 +15,7 @@
          body{
              display: flex;
              justify-content: center;                      
-                      
+                 background-color: rgb(20, 70, 163);     
          }
          .mainContainer{
             margin: 30px 10px;
@@ -33,24 +33,30 @@
             width: 100%;   
          }
          .pantalla {             
-             background-color: black;
+             background-color: white;
              height: 3em;
              width: 100%;
-             border: 2px white solid;
-             border-radius: 0.5em;    
+             border-top: 2px white solid;
+             border-left: 2px white solid;
+             border-right: 2px white solid;
+             border-radius: 0.5em 0.5em 0 0;    
              color: white;
              font-size: 1.5rem;
              text-align: right;
-             overflow: hidden;
+             /*overflow: hidden;*/
              
          }
          .pantalla2{
-            background-color: brown;
-            width: 100%;
-            margin-top: 10px;
+            background-color: white;
+            border-radius: 0 0 0.5em 0.5em;    
+            width: 100%; 
+            margin-top: -4px;          
             border: none;
             font-size: large;
             color: white;
+            border-bottom: 2px white solid;
+            border-left: 2px white solid;
+            border-right: 2px white solid;
             text-align: right;
          }
          .numeros{
@@ -61,8 +67,7 @@
              column-gap: 1%;
              row-gap: 1em;
              flex-wrap: wrap;
-         } 
-         
+         }          
          .numeros input{
              height: 60px;
              border-radius: 1em;    
@@ -81,7 +86,7 @@
             font-size: 1.2rem;
             font-weight: bolder; 
             height: 60px;  
-            background-color: green;
+            background-color:green;
             border-color: aliceblue;
          }
          .numeros input:active{
@@ -96,13 +101,13 @@
 
     <div class="mainContainer">
         <div class="contPantalla">
-            <input class="pantalla" type="text" inputmode="numeric" id="pantalla" readonly value="0">
+            <textarea class="pantalla" type="text" inputmode="numeric" id="pantalla" rows="4" cols="40" readonly value="0"></textarea>
             <textarea class="pantalla2" name="pantalla2" id="pantalla2" rows="4" cols="40" readonly ></textarea>
         </div>        
         <div class="numeros">                     
-            <button class="operacion"></button>
-            <button class="operacion"></button>
-            <button class="operacion"></button>           
+            <button class="operacion" id="operacion"></button>
+            <button class="operacion">+/-</button>
+            <button class="operacion">%</button>           
             <button class="operacion" id="borrar" onclick="borrarUltimo()" ><i class="bi bi-backspace-fill"></i></button>       
             <input type="button" id="numero" value="7">
             <input type="button" id="numero" value="8">
@@ -121,16 +126,16 @@
             <input type="button" id="numero" value="000">
             <button class="operacion" id="operacion" >+</button> 
             <button class="on" id="on" onclick="onc()" >ON</button> 
-            <input type="button" id="numero" value="."> 
+            <input type="button" id="punto" value="."> 
             <button class="operacion" id="ac" onclick="borrarTodo()">AC</button>                     
-            <button class="operacion" id="resultadon" onclick="calcular()">=</button>      
+            <button class="operacion" id="igual">=</button>      
             
     </div>
     </div>
 <!---------------------------------JS---------------------------------------------------------->   
 <script>      
   
-    //--------------------MOSTRAR LOS ELEMENTOS DEL TECLADO------------------------        
+    //--------------------MOSTRAR LOS NUMEROS DEL TECLADO------------------------        
     const pantalla = document.getElementById('pantalla');   
     
     pantalla.focus();
@@ -139,11 +144,11 @@
     // Iterar sobre los inputs numéricos y agregar un manejador de eventos
     inputsNumericos.forEach((input) => {       
         input.addEventListener('click', () => {       
-        if(pantalla.value==='0'){
+        if(pantalla.value==='0' || pantalla.value=== 'Error: División por cero.'){
             pantalla.value = '';
         }
-            pantalla.value += input.value;
-          // Agregar el valor del input a la pantalla
+            pantalla.value += input.value; // Agregar el valor del input a la pantalla
+            calcular();//cada que pulsa un numero activa la funcion calcular         
         });
     });    
     
@@ -176,7 +181,7 @@
             case 111:
                 operador = '/';
                 break;
-            case 56:
+            case 106:
                 operador = '*';
                 break;
             default:
@@ -185,16 +190,23 @@
         pantalla.value += ' ' + operador + ' '; // Agregar el operador a la pantalla
         }
     });
+
     //-----ESCRIBIR EN LA PANTALLA LOS BOTONES DE OPERACIONES CON ESPACIOS EVITANDO DIGITAR SIGNOS CUANDO LA PANTALLA ESTA VACIA--------------------------
-    // Agregar eventos de clic a los botones de operación
+        
+    // Iterar sobre los botones de operaciones aritméticas y agregar un manejador de eventos
     botonesOperaciones.forEach((boton) => {
-    boton.addEventListener('click', () => {
-        if(pantalla.value != ''){
-        pantalla.value += ' ' + boton.textContent + ' ';
-        } // Agregar el valor del botón a la pantalla
+        boton.addEventListener('click', () => {
+            var valorPantalla = pantalla.value.trim();
+            var ultimoCaracter = valorPantalla.slice(-1);
+            
+            // Verificar si la pantalla no está vacía, no tiene el valor "0", no tiene el mensaje de error y el último carácter no es un operador
+            if (valorPantalla !== '' && valorPantalla !== '0' && valorPantalla !== 'Error: División por cero.' && !['/', '*', '+', '-'].includes(ultimoCaracter)) {
+                pantalla.value += ' ' + boton.textContent + ' '; // Agregar el valor del botón a la pantalla con espacios
+            }
         });
     });
-      
+    
+    // Verificar si el último caracter es un punto   
     //-------------------------FUNCION CALCULAR------------------------------------------------------
        
     function calcular() {                   
@@ -202,7 +214,6 @@
         const pantallaValue = document.getElementById('pantalla').value; 
         const pantalla2 = document.getElementById('pantalla2');
 
-        
         // Separar los números y los operadores
         const partes = pantallaValue.split(/(\+|\-|\*|\/)/); // Usar una expresión regular para dividir la expresión manteniendo los operadores
         const numeros = [];
@@ -256,40 +267,73 @@
         }
          //Esta funcion es para que muestre el resultado separado por miles
          function formatearNumeroConSeparadores(numero) {
-            return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }               
-            const numeroFormateado = formatearNumeroConSeparadores(resultado);                   
-            const numeroFormateado2 = formatearNumeroConSeparadores(pantallaValue);
-            // Mostrar el resultado 
-            pantalla.value = resultado;    
+            // Convertir el número a string y dividirlo en parte entera y decimal
+            const partes = numero.toString().split(".");
+            // Formatear la parte entera con comas
+            partes[0] = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            // Unir de nuevo la parte entera y la parte decimal
+            return partes.join(".");
+        }
+               
+        const numeroFormateado = formatearNumeroConSeparadores(resultado);
+        const numeroFormateado2 = formatearNumeroConSeparadores(pantallaValue);
         
-            pantalla2.value = numeroFormateado2 + ' = ' + numeroFormateado;
+        // Mostrar el resultado
+        const igual = document.getElementById('igual');
+         igual.addEventListener('click', ()=> {
+            pantalla.value = resultado;  
+        });        
+
+        pantalla2.value = numeroFormateado2 + ' = ' + numeroFormateado;                    
     }  
     //-----------------FUNCIONES DE ALGUNAS TECLAS--------------------------------------------------------------               
     function borrarUltimo(){
-        let valor = pantalla.value;  
+        let valor = pantalla.value;
+        if(valor != 'Error: División por cero.' && valor != '0'){  
         valor = valor.slice(0, -1);
         pantalla.value = valor;
         }
+        if(pantalla.value === ''){
+            pantalla.value = 0;
+        }
+    }
     function borrarTodo(){
         pantalla.value = '0';
         pantalla2.value = '';
         }
 
-    /*const on = document.getElementById('on');
+    const on = document.getElementById('on');
     function onc(){       
         if(on.textContent ==='ON'){
             on.textContent = 'OFF';
-            pantalla.value = '';            
+            pantalla.value = 0;  
+            pantalla2.value = '';          
             pantalla.style.backgroundColor = 'black'; 
+            pantalla2.style.backgroundColor = 'black'; 
             on.style.backgroundColor = 'red';          
         }else if(on.textContent === 'OFF'){ 
             on.textContent ='ON';
             pantalla.style.backgroundColor = 'white';
+            pantalla2.style.backgroundColor = 'white'; 
             on.style.backgroundColor = 'green'; 
             pantalla2.value = '';
         }
-    }    */
+    }    
+
+    const punto = document.getElementById('punto');   
+    
+    punto.addEventListener('click', () => {
+        // Obtener el último número en la pantalla
+        var numeros = pantalla.value.split(/[\+\-\*\/\s]/);
+        var ultimoNumero = numeros[numeros.length - 1];
+        
+        // Verificar si el último número ya contiene un punto decimal
+        if (!ultimoNumero.includes('.')) {
+            pantalla.value += '.';
+        }
+    });
+    
+    
     //------------VALIDAR TECLAS Y SOLO PERMITE NUMEROS Y OPERADORES---------------------------------------------------   
         function validarCaracter(tecla) {
         // Expresión regular para caracteres permitidos: dígitos del 0 al 9, ÷, +, -, x, %
@@ -299,10 +343,10 @@
         // Obtener el input
         // Evento keydown para validar el carácter ingresado
         pantalla.addEventListener('keydown', function(event) {
-            if (!validarCaracter(event.key)) {
+           if (!validarCaracter(event.key)) {
             // Si el carácter no es válido, prevenir su inserción en el input
-                event.preventDefault();
-                }
+               event.preventDefault();
+               }            
         });
     //--------------------------------------------------------------------------------
                
