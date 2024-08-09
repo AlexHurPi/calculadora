@@ -67,11 +67,10 @@
             margin-top: 5px;
             border-radius: 20px;
          }
-         .lblCopiar{
-            color: white;
-            margin-left: 5px;
-            display: none;
-        }
+         .imagen{
+            display: flex;
+            width: 250px;
+         }
          .numeros{
              width: 100%;
              display: grid;
@@ -116,8 +115,10 @@
         <div class="contPantalla">
             <textarea class="pantalla" type="text" inputmode="numeric" id="pantalla" rows="4" cols="40" readonly value="0"></textarea>
             <textarea class="pantalla2" name="pantalla2" id="pantalla2" rows="4" cols="40" readonly ></textarea>
-        <button class="copiar" id="btnCopiar">Copiar</button> 
+        <!--<img class="imagen" id="imagen" src="Imagen1.png" alt="">-->
+            <button class="copiar" id="btnCopiar">Copiar</button> 
         <button class="copiar" id="compartir">Compartir</button> 
+
         </div>        
         <div class="numeros">                     
             <button class="operacion" id="operacion"></button>
@@ -127,11 +128,11 @@
             <input type="button" id="numero" value="7">
             <input type="button" id="numero" value="8">
             <input type="button" id="numero" value="9">            
-            <button class="operacion" id="operacion" >/</button>          
+            <button class="operacion" id="operacion" >÷</button>          
             <input type="button" id="numero" value="4">
             <input type="button" id="numero" value="5">
             <input type="button" id="numero" value="6">   
-            <button class="operacion" id="operacion" >*</button>         
+            <button class="operacion" id="operacion" >x</button>         
             <input type="button" id="numero" value="1">
             <input type="button" id="numero" value="2">
             <input type="button" id="numero" value="3">  
@@ -172,11 +173,12 @@
     const botonesOperaciones = document.querySelectorAll('#operacion');
 
     // Función para manejar las pulsaciones de teclas
-    document.addEventListener('keydown', (event) => {
+    /*document.addEventListener('keydown', (event) => {
     // Obtener el código de la tecla presionada
     const keyCode = event.keyCode;
     
     // Verificar si la tecla presionada es un número o un operador
+    
     if ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105)) {
         // Teclas de números (48-57 son las teclas numéricas, 96-105 son las teclas numéricas del teclado numérico)
         pantalla.value += event.key; // Agregar el valor de la tecla a la pantalla
@@ -205,6 +207,7 @@
         pantalla.value += ' ' + operador + ' '; // Agregar el operador a la pantalla
         }
     });
+    */
 
     //-----ESCRIBIR EN LA PANTALLA LOS BOTONES DE OPERACIONES CON ESPACIOS EVITANDO DIGITAR SIGNOS CUANDO LA PANTALLA ESTA VACIA--------------------------
         
@@ -230,7 +233,7 @@
         const pantalla2 = document.getElementById('pantalla2');
 
         // Separar los números y los operadores
-        const partes = pantallaValue.split(/(\+|\-|\*|\/)/); // Usar una expresión regular para dividir la expresión manteniendo los operadores
+        const partes = pantallaValue.split(/(\+|\-|\x|\÷)/); // Usar una expresión regular para dividir la expresión manteniendo los operadores
         const numeros = [];
         const operadores = [];
         
@@ -248,14 +251,14 @@
         
         // Realizar primero las multiplicaciones y divisiones
         for (let i = 0; i < operadores.length; i++) {
-            if (operadores[i] === '*' || operadores[i] === '/') {
+            if (operadores[i] === 'x' || operadores[i] === '÷') {
                 const operador = operadores[i];
                 const num1 = numeros[i];
                 const num2 = numeros[i + 1];
                 let resultado;
-                if (operador === '*') {
+                if (operador === 'x') {
                     resultado = num1 * num2;
-                } else if (operador === '/') {
+                } else if (operador === '÷') {
                     if (num2 === 0) {
                         pantalla.value ="Error: División por cero.";
                         return;
@@ -371,11 +374,13 @@
 
     document.getElementById('compartir').addEventListener('click', async () => {
         const transactionDetails = document.getElementById('pantalla2').value;
+        const imagen = document.getElementById('imagen');
 
         if (navigator.share) {
             try {
                 await navigator.share({
                     title: 'Detalles de la Transacción',
+                    files: [file],
                     text: transactionDetails,
                     //url: window.location.href
                 });
