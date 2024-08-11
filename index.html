@@ -218,7 +218,7 @@
             var ultimoCaracter = valorPantalla.slice(-1);
             
             // Verificar si la pantalla no está vacía, no tiene el valor "0", no tiene el mensaje de error y el último carácter no es un operador
-            if (valorPantalla !== '' && valorPantalla !== '0' && valorPantalla !== 'Error: División por cero.' && !['/', '*', '+', '-'].includes(ultimoCaracter)) {
+            if (valorPantalla !== '' && valorPantalla !== '0' && valorPantalla !== 'Error: División por cero.' && !['÷', 'x', '+', '-'].includes(ultimoCaracter)) {
                 pantalla.value += ' ' + boton.textContent + ' '; // Agregar el valor del botón a la pantalla con espacios
             }
         });
