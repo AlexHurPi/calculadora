@@ -379,8 +379,7 @@
         if (navigator.share) {
             try {
                 await navigator.share({
-                    title: 'Detalles de la Transacción',
-                    files: [file],
+                    title: 'Detalles de la Transacción',                    
                     text: transactionDetails,
                     //url: window.location.href
                 });
